@@ -1,37 +1,50 @@
 import Blockly from 'blockly';
 import * as It from 'blockly/msg/it';
 
+import { getXML } from './utils';
+
+import './block_movePan';
+import './block_moveRover';
+import './block_readDist';
+import './block_interval';
+
+const toolbox = getXML(require('../logic/toolbox.xml').default);
+
 Blockly.setLocale(It);
 
-Blockly.defineBlocksWithJsonArray([
-  {
-    type: 'play_sound',
-    message0: 'Play %1',
-    args0: [
-      {
-        type: 'field_dropdown',
-        name: 'VALUE',
-        options: [
-          ['C4', 'sounds/c4.m4a'],
-          ['D4', 'sounds/d4.m4a'],
-          ['E4', 'sounds/e4.m4a'],
-          ['F4', 'sounds/f4.m4a'],
-          ['G4', 'sounds/g4.m4a'],
-          ['A5', 'sounds/a5.m4a'],
-          ['B5', 'sounds/b5.m4a'],
-          ['C5', 'sounds/c5.m4a'],
-        ],
-      },
-    ],
-    previousStatement: null,
-    nextStatement: null,
-    colour: 355,
-    tooltip: '',
-    helpUrl: '',
-  },
-]);
+Blockly.JavaScript.STATEMENT_PREFIX = 'this.xblk(%1);\n';
+Blockly.JavaScript.addReservedWords('this');
 
-Blockly.JavaScript.play_sound = (block) => {
-  const value = `'${block.getFieldValue('VALUE')}'`;
-  return `alert(${value});\n`;
-};
+const initWorkspace = elm => Blockly.inject(elm,
+  {
+    toolbox,
+    collapse: true,
+    comments: true,
+    disable: true,
+    maxBlocks: Infinity,
+    trashcan: true,
+    horizontalLayout: false,
+    toolboxPosition: 'start',
+    css: true,
+    media: 'https://blockly-demo.appspot.com/static/media/',
+    rtl: false,
+    scrollbars: true,
+    sounds: true,
+    oneBasedIndex: true,
+    grid: {
+      spacing: 20,
+      length: 1,
+      colour: '#888',
+      snap: true,
+    },
+    zoom: {
+      controls: true,
+      wheel: true,
+      startScale: 1,
+      maxScale: 3,
+      minScale: 0.3,
+      scaleSpeed: 1.2,
+    },
+  });
+
+export { initWorkspace };

@@ -15,7 +15,7 @@
     "@quasar/extras": "^1.0.0",
     "acorn": "^7.1.0",
     "blockly": "^3.20191014.4",
-    "mqtt": "^3.0.0",
+    "paho-mqtt": "^1.1.0",
     "quasar": "^1.0.0",
     "raw-loader": "^4.0.0"
   },

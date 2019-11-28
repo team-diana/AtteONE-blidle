@@ -1,4 +1,16 @@
-<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <category name="AtteOne" colour="0">
+    <block type="speed_control">
+      <field name="rovNum">1</field>
+    </block>
+    <block type="pan_control">
+      <field name="rovNum">1</field>
+    </block>
+    <block type="leggi_distanza">
+      <field name="rovNum">1</field>
+    </block>
+  </category>
+  <sep></sep>
   <category name="Logica" colour="#5b80a5">
     <block type="controls_if"></block>
     <block type="logic_compare">
@@ -26,7 +38,7 @@
       <field name="MODE">WHILE</field>
     </block>
     <block type="controls_for">
-      <field name="VAR" id="WWwS1iX_z#1rRiiod2@G">i</field>
+      <field name="VAR" id="S5NI9kIQ^dr0G6VMX~2,">i</field>
       <value name="FROM">
         <shadow type="math_number">
           <field name="NUM">1</field>
@@ -44,10 +56,13 @@
       </value>
     </block>
     <block type="controls_forEach">
-      <field name="VAR" id="oB^l,j7Vr1i$)FCs;JX5">j</field>
+      <field name="VAR" id="#rk}oLdCS3|U[vrH9^vx">j</field>
     </block>
-    <block type="controls_flow_statements">
+    <block type="controls_flow_statements" disabled="true">
       <field name="FLOW">BREAK</field>
+    </block>
+    <block type="interval">
+      <field name="interval">100</field>
     </block>
   </category>
   <category name="Matematica" colour="#5b67a5">
@@ -150,78 +165,6 @@
     </block>
     <block type="math_random_float"></block>
   </category>
-  <category name="Liste" colour="#745ba5">
-    <block type="lists_create_with">
-      <mutation items="0"></mutation>
-    </block>
-    <block type="lists_create_with">
-      <mutation items="3"></mutation>
-    </block>
-    <block type="lists_repeat">
-      <value name="NUM">
-        <shadow type="math_number">
-          <field name="NUM">5</field>
-        </shadow>
-      </value>
-    </block>
-    <block type="lists_length"></block>
-    <block type="lists_isEmpty"></block>
-    <block type="lists_indexOf">
-      <field name="END">FIRST</field>
-      <value name="VALUE">
-        <block type="variables_get">
-          <field name="VAR" id="9jp2RWM^tu?Ur*mk3LBh">list</field>
-        </block>
-      </value>
-    </block>
-    <block type="lists_getIndex">
-      <mutation statement="false" at="true"></mutation>
-      <field name="MODE">GET</field>
-      <field name="WHERE">FROM_START</field>
-      <value name="VALUE">
-        <block type="variables_get">
-          <field name="VAR" id="9jp2RWM^tu?Ur*mk3LBh">list</field>
-        </block>
-      </value>
-    </block>
-    <block type="lists_setIndex">
-      <mutation at="true"></mutation>
-      <field name="MODE">SET</field>
-      <field name="WHERE">FROM_START</field>
-      <value name="LIST">
-        <block type="variables_get">
-          <field name="VAR" id="9jp2RWM^tu?Ur*mk3LBh">list</field>
-        </block>
-      </value>
-    </block>
-    <block type="lists_getSublist">
-      <mutation at1="true" at2="true"></mutation>
-      <field name="WHERE1">FROM_START</field>
-      <field name="WHERE2">FROM_START</field>
-      <value name="LIST">
-        <block type="variables_get">
-          <field name="VAR" id="9jp2RWM^tu?Ur*mk3LBh">list</field>
-        </block>
-      </value>
-    </block>
-    <block type="lists_split">
-      <mutation mode="SPLIT"></mutation>
-      <field name="MODE">SPLIT</field>
-      <value name="DELIM">
-        <shadow type="text">
-          <field name="TEXT">,</field>
-        </shadow>
-      </value>
-    </block>
-    <block type="lists_sort">
-      <field name="TYPE">NUMERIC</field>
-      <field name="DIRECTION">1</field>
-    </block>
-  </category>
-  <sep></sep>
-  <category name="Variabili" colour="#a55b80" custom="VARIABLE"></category>
-  <category name="Funzioni" colour="#995ba5" custom="PROCEDURE"></category>
-  <sep></sep>
   <category name="Testo" colour="#5ba58c">
     <block type="text">
       <field name="TEXT"></field>
@@ -230,7 +173,7 @@
       <mutation items="2"></mutation>
     </block>
     <block type="text_append">
-      <field name="VAR" id="^Y7FVAJ@Ar!qxnPk:JgX">item</field>
+      <field name="VAR" id="JXE,y;b!hP=nv2Ud-A02">item</field>
       <value name="TEXT">
         <shadow type="text">
           <field name="TEXT"></field>
@@ -255,7 +198,7 @@
       <field name="END">FIRST</field>
       <value name="VALUE">
         <block type="variables_get">
-          <field name="VAR" id="y]ln3~imZU%9Vj1j^STv">text</field>
+          <field name="VAR" id="P-s-37{Es!%fPJ2Aj:~:">text</field>
         </block>
       </value>
       <value name="FIND">
@@ -269,7 +212,7 @@
       <field name="WHERE">FROM_START</field>
       <value name="VALUE">
         <block type="variables_get">
-          <field name="VAR" id="y]ln3~imZU%9Vj1j^STv">text</field>
+          <field name="VAR" id="P-s-37{Es!%fPJ2Aj:~:">text</field>
         </block>
       </value>
     </block>
@@ -279,7 +222,7 @@
       <field name="WHERE2">FROM_START</field>
       <value name="STRING">
         <block type="variables_get">
-          <field name="VAR" id="y]ln3~imZU%9Vj1j^STv">text</field>
+          <field name="VAR" id="P-s-37{Es!%fPJ2Aj:~:">text</field>
         </block>
       </value>
     </block>
@@ -316,5 +259,115 @@
       </value>
     </block>
   </category>
+  <category name="Liste" colour="#745ba5">
+    <block type="lists_create_with">
+      <mutation items="0"></mutation>
+    </block>
+    <block type="lists_create_with">
+      <mutation items="3"></mutation>
+    </block>
+    <block type="lists_repeat">
+      <value name="NUM">
+        <shadow type="math_number">
+          <field name="NUM">5</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="lists_length"></block>
+    <block type="lists_isEmpty"></block>
+    <block type="lists_indexOf">
+      <field name="END">FIRST</field>
+      <value name="VALUE">
+        <block type="variables_get">
+          <field name="VAR" id="`!frK^/^J1G3#Gnme)@y">list</field>
+        </block>
+      </value>
+    </block>
+    <block type="lists_getIndex">
+      <mutation statement="false" at="true"></mutation>
+      <field name="MODE">GET</field>
+      <field name="WHERE">FROM_START</field>
+      <value name="VALUE">
+        <block type="variables_get">
+          <field name="VAR" id="`!frK^/^J1G3#Gnme)@y">list</field>
+        </block>
+      </value>
+    </block>
+    <block type="lists_setIndex">
+      <mutation at="true"></mutation>
+      <field name="MODE">SET</field>
+      <field name="WHERE">FROM_START</field>
+      <value name="LIST">
+        <block type="variables_get">
+          <field name="VAR" id="`!frK^/^J1G3#Gnme)@y">list</field>
+        </block>
+      </value>
+    </block>
+    <block type="lists_getSublist">
+      <mutation at1="true" at2="true"></mutation>
+      <field name="WHERE1">FROM_START</field>
+      <field name="WHERE2">FROM_START</field>
+      <value name="LIST">
+        <block type="variables_get">
+          <field name="VAR" id="`!frK^/^J1G3#Gnme)@y">list</field>
+        </block>
+      </value>
+    </block>
+    <block type="lists_split">
+      <mutation mode="SPLIT"></mutation>
+      <field name="MODE">SPLIT</field>
+      <value name="DELIM">
+        <shadow type="text">
+          <field name="TEXT">,</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="lists_sort">
+      <field name="TYPE">NUMERIC</field>
+      <field name="DIRECTION">1</field>
+    </block>
+  </category>
+  <category name="Colori" colour="#a5745b">
+    <block type="colour_picker">
+      <field name="COLOUR">#ff0000</field>
+    </block>
+    <block type="colour_random"></block>
+    <block type="colour_rgb">
+      <value name="RED">
+        <shadow type="math_number">
+          <field name="NUM">100</field>
+        </shadow>
+      </value>
+      <value name="GREEN">
+        <shadow type="math_number">
+          <field name="NUM">50</field>
+        </shadow>
+      </value>
+      <value name="BLUE">
+        <shadow type="math_number">
+          <field name="NUM">0</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="colour_blend">
+      <value name="COLOUR1">
+        <shadow type="colour_picker">
+          <field name="COLOUR">#ff0000</field>
+        </shadow>
+      </value>
+      <value name="COLOUR2">
+        <shadow type="colour_picker">
+          <field name="COLOUR">#3333ff</field>
+        </shadow>
+      </value>
+      <value name="RATIO">
+        <shadow type="math_number">
+          <field name="NUM">0.5</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
   <sep></sep>
+  <category name="Variabili" colour="#a55b80" custom="VARIABLE"></category>
+  <category name="Funzioni" colour="#995ba5" custom="PROCEDURE"></category>
 </xml>
