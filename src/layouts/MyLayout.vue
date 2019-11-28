@@ -7,7 +7,7 @@
           dense
           round
           @click="leftDrawerOpen = !leftDrawerOpen"
-          icon="menu"
+          icon="settings"
           aria-label="Menu"
         />
 
@@ -15,26 +15,57 @@
           AttYoUno
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          MQTT:
+          <span v-if="mqttClient.status == 'connected'">
+            CONNESSO
+          </span>
+          <span v-else-if="mqttClient.status == 'connecting'">
+            In connessione...
+          </span>
+          <span v-else>
+            DISCONNESSO
+          </span>
+          <div class="inline-block text-right" style="width:2rem">
+            <q-spinner color="deep-orange" size="1.5rem"
+              v-if="mqttClient.status == 'connecting'"/>
+          </div>
+        </div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
+      :value="leftDrawerOpen"
       overlay
       elevated
       bordered
       content-class="bg-grey-2"
     >
       <q-list>
-        <q-item-label header>Essential Links</q-item-label>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="school" />
-          </q-item-section>
+        <q-item-label header>Impostazioni</q-item-label>
+        <q-item>
           <q-item-section>
-            <q-item-label>Docs</q-item-label>
-            <q-item-label caption>quasar.dev</q-item-label>
+            <q-input outlined
+              v-model="mqttClient.host" label="Host Server MQTT (ws)"/>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section>
+            <q-input outlined type="number"
+              v-model.number="mqttClient.port" label="Porta MQTT (ws)"/>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="mqttClient.status != 'connected'">
+          <q-item-section>
+            <q-btn class="full-width" label="Connetti"
+              :loading="mqttClient.status == 'connecting'"
+              @click="mqttClient.connect" color="positive"/>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="mqttClient.status == 'connected'">
+          <q-item-section>
+            <q-btn class="full-width" label="Disconnetti"
+              @click="mqttClient.disconnect" color="negative"/>
           </q-item-section>
         </q-item>
       </q-list>
@@ -47,13 +78,21 @@
 </template>
 
 <script>
+import mqttClient from '../logic/mqttClient';
+
 export default {
   name: 'MyLayout',
 
   data() {
     return {
       leftDrawerOpen: false,
+      mqttClient,
     };
+  },
+  mounted() {
+    if (mqttClient.status === 'disconnected') {
+      this.leftDrawerOpen = true;
+    }
   },
 };
 </script>

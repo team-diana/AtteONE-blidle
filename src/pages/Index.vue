@@ -8,20 +8,34 @@
     <q-btn @click="openWS" label="Apri workspace" color="purple"/>
     <q-btn class="q-mx-md" @click="saveWS" label="Salva workspace" color="primary"/>
     <q-btn :loading="running>0 && !runnable" :disabled="!running"
-      @click="runnable = false" label="STOP" color="negative"/>
-    <q-btn @click="run" :disabled="runnable" :loading="running>0" label="ESEGUI" color="positive"/>
+      @click="stopAll('STOP')" label="STOP" color="negative"/>
+    <q-btn @click="run"
+      :disabled="runnable || mqttClient.status !=='connected'"
+      :loading="running>0" label="ESEGUI" color="positive"/>
     <a ref="dler" style="display:none"/>
     <input type="file" ref="uper" style="display:none" accept="text/xml">
-    <q-dialog seamless :value="running>0">
-      <q-card style="height:calc(100vh - 15rem);width:calc(100vw - 6rem)">
-        <q-card-section>
+    <q-dialog seamless :value="showConsole">
+      <q-card style="background:#FFFC;height:calc(100vh - 15rem);width:calc(100vw - 6rem)">
+        <q-card-section style="height:calc(100% - 3rem);">
           <div class="text-h6 q-mb-md">Console</div>
-          <div v-for="(line,i) of obuf" :key="i">
-            <span class="text-grey-6">{{line.time.toLocaleTimeString()
-              }}.{{line.time.getMilliseconds()}}</span>:
-            {{line.line}}
-          </div>
+          <q-scroll-area style="height:100%" ref="scrollArea">
+            <div v-for="(line,i) of obuf" :key="i">
+              <span class="text-grey-6">{{line.time.toLocaleTimeString()
+                }}.{{String(line.time.getMilliseconds()).padStart(3, '0')}}</span>:
+                <span :class="{'text-bold':line.bold}">
+                  {{line.line}}
+                </span>
+            </div>
+          </q-scroll-area>
         </q-card-section>
+        <q-card-actions align="center"
+          style="position:absolute;bottom:0;width:100%">
+          <q-slide-transition>
+            <q-btn flat label="Chiudi" color="positive"
+              v-show="running==0"
+              @click="showConsole=false"/>
+           </q-slide-transition>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </q-page>
@@ -46,6 +60,8 @@ export default {
     running: 0,
     runnable: false,
     obuf: [],
+    mqttClient,
+    showConsole: false,
   }),
   methods: {
     onResize(s) {
@@ -79,13 +95,22 @@ export default {
       mqttClient.subscribe(topic, handler);
     },
     stopAll(e) {
+      if (this.runnable) {
+        this.obuf.push({
+          time: new Date(),
+          line: `FINE PROGRAMMA (${(e && (e.name || e.message))
+          || e})`,
+          bold: true,
+        });
+      }
+      mqttClient.clearHandlers();
       this.runnable = false;
       // eslint-disable-next-line no-console
-      console.warn(e);
+      console.warn(e, { e });
     },
     xblk(blid) {
       if (!this.runnable) {
-        throw new Error('Execution stopped');
+        throw new Error('INTERROTTO');
       }
       this.blk.highlightBlock(blid);
     },
@@ -105,6 +130,7 @@ export default {
       console.log('START: ', code);
 
       this.obuf = [];
+      this.showConsole = true;
       window.alert = (t) => {
         // eslint-disable-next-line no-console
         console.log(t);
@@ -112,7 +138,8 @@ export default {
           time: new Date(),
           line: t,
         });
-        if (this.obuf.length > 20) this.obuf.shift();
+        if (this.obuf.length > 80) this.obuf.shift();
+        this.$refs.scrollArea.setScrollPosition(this.position, 3000);
       };
 
       this.runnable = true;
@@ -121,9 +148,12 @@ export default {
         // eslint-disable-next-line no-eval
         eval(code);
       } catch (e) {
-        this.stopAll(e);
+        this.stopAll(new Error('Interrotto dall\'utente'));
       }
       this.running -= 1;
+      if (!this.running) {
+        this.stopAll(new Error('Interrotto dall\'utente'));
+      }
     },
     loadFile(file) {
       const reader = new FileReader();
@@ -138,7 +168,7 @@ export default {
   watch: {
     running() {
       if (!this.running) {
-        this.runnable = false;
+        this.stopAll(new Error('Interrotto dall\'utente'));
         window.alert = originalAlert;
       }
       // eslint-disable-next-line no-console

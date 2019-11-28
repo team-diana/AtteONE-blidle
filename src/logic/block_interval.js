@@ -25,6 +25,15 @@ Blockly.JavaScript.interval = (block) => {
     'cond',
     Blockly.JavaScript.ORDER_ATOMIC,
   );
+  if (!interval) {
+    return "alert('Intervallo ciclo non definito!')";
+  }
+  if (!cond) {
+    return "alert('Condizione ciclo non definita!')";
+  }
+  if (!intCode) {
+    return "alert('Codice ciclo non definito!')";
+  }
   const fun = `fun${Date.now()}_${Math.floor(Math.random() * 99999)}`;
   const code = `
   let ${fun} = () => {

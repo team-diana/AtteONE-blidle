@@ -1,5 +1,6 @@
-import { MQTT } from 'paho-mqtt';
+import * as MQTT from 'paho-mqtt';
 import Vue from 'vue';
+import { Dialog } from 'quasar';
 
 const msgHandlers = {};
 
@@ -11,16 +12,18 @@ export default new Vue({
     port: null,
   },
   methods: {
-    connect(host, port) {
-      if (!host) ({ host } = this);
-      if (!port) ({ port } = this);
+    disconnect() {
       if (this.client && this.client) {
         this.client.disconnect();
       }
+      this.client = null;
+    },
+    connect() {
+      this.disconnect();
       this.status = 'connecting';
       this.client = new MQTT.Client(
-        host,
-        Number(port),
+        this.host,
+        this.port,
         `AtteOne-IDE${Math.floor(Math.random() * 9999)}`,
       );
       this.client.onConnectionLost = () => {
@@ -40,17 +43,40 @@ export default new Vue({
       this.client.connect({
         onSuccess: () => {
           this.status = 'connected';
+          Object.keys(msgHandlers).forEach((topic) => {
+            this.client.subscribe(topic);
+          });
+          window.localStorage.setItem('attyouno_host', this.host);
+          window.localStorage.setItem('attyouno_port', this.port);
+        },
+        onFailure: () => {
+          Dialog.create({
+            title: 'Errore',
+            message: 'Connessione al broker MQTT fallita!',
+          });
+          this.status = 'disconnected';
+          this.client.disconnect();
         },
       });
     },
     publish(topic, value) {
       const message = new MQTT.Message(value);
       message.destinationName = topic;
-      this.client.send(message);
+      this.client.publish(message);
     },
     subscribe(topic, onMessage) {
       this.client.subscribe(topic);
       msgHandlers[topic] = onMessage;
     },
+    clearHandlers() {
+      Object.keys(msgHandlers).forEach((topic) => {
+        this.client.unsubscribe(topic);
+        delete msgHandlers[topic];
+      });
+    },
+  },
+  created() {
+    this.host = window.localStorage.getItem('attyouno_host');
+    this.port = Number(window.localStorage.getItem('attyouno_port'));
   },
 });
