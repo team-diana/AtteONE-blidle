@@ -35,7 +35,7 @@
     </q-header>
 
     <q-drawer
-      :value="leftDrawerOpen"
+      v-model="leftDrawerOpen"
       overlay
       elevated
       bordered
@@ -69,6 +69,10 @@
           </q-item-section>
         </q-item>
       </q-list>
+      <q-item style="position:absolute;bottom:0;width:100%">
+        <q-img class="q-ma-md"
+          src="https://upload.wikimedia.org/wikipedia/it/thumb/2/27/Politecnico_di_Torino_-_Logo.svg/750px-Politecnico_di_Torino_-_Logo.svg.png"/>
+      </q-item>
     </q-drawer>
 
     <q-page-container>
