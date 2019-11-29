@@ -13,10 +13,14 @@ export default new Vue({
   },
   methods: {
     disconnect() {
-      if (this.client && this.client) {
+      try {
         this.client.disconnect();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      } finally {
+        this.client = null;
       }
-      this.client = null;
     },
     connect() {
       this.disconnect();

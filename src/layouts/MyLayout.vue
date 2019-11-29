@@ -12,7 +12,10 @@
         />
 
         <q-toolbar-title>
-          AttYoUno
+          AtteONE BLIDLE
+          <q-tooltip>
+            BLockly Integrated DeveLopment Environment
+          </q-tooltip>
         </q-toolbar-title>
 
         <div>
@@ -71,6 +74,8 @@
       </q-list>
       <q-item style="position:absolute;bottom:0;width:100%">
         <q-img class="q-ma-md"
+          style="max-height:calc(100vh - 17rem);max-width:calc(100vh - 17rem);
+            margin-left:auto;margin-right:auto"
           src="https://upload.wikimedia.org/wikipedia/it/thumb/2/27/Politecnico_di_Torino_-_Logo.svg/750px-Politecnico_di_Torino_-_Logo.svg.png"/>
       </q-item>
     </q-drawer>
@@ -100,3 +105,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.q-img .q-img__image {
+  background-size: 85% !important;
+  background-position: center bottom !important;
+}
+</style>

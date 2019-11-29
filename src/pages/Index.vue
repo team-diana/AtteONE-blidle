@@ -227,8 +227,10 @@ export default {
       try {
         this.loadFile(e.dataTransfer.items[0].getAsFile());
       // eslint-disable-next-line no-empty
-      } finally {}
+      } catch (_) {}
     };
+
+    document.title = 'AtteONE BLIDLE';
   },
 };
 </script>
