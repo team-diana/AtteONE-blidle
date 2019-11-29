@@ -10,7 +10,7 @@
     <q-btn-group>
       <q-btn :loading="running>0 && !runnable" :disabled="!running"
         icon="stop"
-        @click="stopAll('STOP')" label="STOP" color="negative"/>
+        @click="stop" label="STOP" color="negative"/>
       <q-btn @click="run" icon="play_arrow"
         :disabled="runnable || mqttClient.status !=='connected'"
         :loading="running>0" label="ESEGUI" color="positive"/>
@@ -21,14 +21,15 @@
       <q-card style="background:#FFFC;height:calc(100vh - 15rem);width:calc(100vw - 6rem)">
         <q-card-section style="height:calc(100% - 3rem);">
           <div class="text-h6 q-mb-md">Console</div>
-          <q-scroll-area style="height:100%" ref="scrollArea">
+          <q-scroll-area ref="scrollArea" class="scrollArea"
+            :class="{almost:!running}">
             <div v-for="(line,i) of obuf" :key="i">
               <span class="text-grey-6">{{line.time.toLocaleTimeString()
-                }}.{{String(line.time.getMilliseconds()).padStart(3, '0')}}</span>:
-                <span :class="{'text-bold':line.bold}">
-                  {{line.line}}
-                </span>
+                }}.{{String(line.time.getMilliseconds()).padStart(3, '0')}}
+                </span>: <span :class="{'text-bold':line.bold}"
+                  :style="line.color && `color:${line.color}`" v-text="line.line"/>
             </div>
+            <div class="anchor"/>
           </q-scroll-area>
         </q-card-section>
         <q-card-actions align="center"
@@ -53,8 +54,6 @@ import { initWorkspace } from '../logic/blkConfig';
 
 
 Vue.config.ignoredElements = ['xml', 'category', 'block', 'value', 'field'];
-
-const originalAlert = window.alert;
 
 export default {
   name: 'PageIndex',
@@ -106,28 +105,41 @@ export default {
     mqttSubscribe(topic, handler) {
       mqttClient.subscribe(topic, handler);
     },
-    stopAll(e) {
-      if (this.runnable) {
-        this.obuf.push({
-          time: new Date(),
-          line: `FINE PROGRAMMA (${(e && (e.name || e.message))
-          || e})`,
-          bold: true,
-        });
-      }
+    stopAll(e, tname = '') {
+      this.prnt(`THREAD ${tname} INTERROTTO (${(e && (e.message))
+        || e})`, { bold: true });
       mqttClient.clearHandlers();
       this.runnable = false;
       // eslint-disable-next-line no-console
       console.warn(e, { e });
     },
     xblk(blid) {
-      if (!this.runnable) {
-        throw new Error('INTERROTTO');
-      }
       this.blk.highlightBlock(blid);
+      if (!this.runnable) {
+        throw new Error('STOP');
+      }
+    },
+    prnt(t, p) {
+      // eslint-disable-next-line no-console
+      console.log(t);
+      const line = {
+        time: new Date(),
+        line: t,
+      };
+      if (typeof p === 'object') {
+        Object.assign(line, p);
+      }
+      this.obuf.push(line);
+      if (this.obuf.length > 80) this.obuf.shift();
+      if (this.$refs.scrollArea) {
+        this.$refs.scrollArea.setScrollPosition(3000, 200);
+      }
+    },
+    stop() {
+      this.runnable = false;
+      this.prnt('INTERRUZIONE...', { bold: true, color: 'red' });
     },
     run() {
-      Blockly.JavaScript.addReservedWords('code');
       const code = Blockly.JavaScript.workspaceToCode(this.blk);
 
       if (!code) {
@@ -138,33 +150,27 @@ export default {
         return;
       }
 
+      if (this.running) return;
+
       // eslint-disable-next-line no-console
-      console.log('START: ', code);
+      console.log('START:\n', code);
 
       this.obuf = [];
       this.showConsole = true;
-      window.alert = (t) => {
-        // eslint-disable-next-line no-console
-        console.log(t);
-        this.obuf.push({
-          time: new Date(),
-          line: t,
-        });
-        if (this.obuf.length > 80) this.obuf.shift();
-        this.$refs.scrollArea.setScrollPosition(this.position, 3000);
-      };
-
       this.runnable = true;
       this.running += 1;
+      let mainStopped = false;
+      this.prnt('PROGRAMMA AVVIATO!', { bold: true, color: 'green' });
       try {
         // eslint-disable-next-line no-eval
         eval(code);
       } catch (e) {
-        this.stopAll(new Error('Interrotto dall\'utente'));
+        this.stopAll(e, 'PRINCIPALE');
+        mainStopped = true;
       }
       this.running -= 1;
-      if (!this.running) {
-        this.stopAll(new Error('Interrotto dall\'utente'));
+      if (!mainStopped) {
+        this.prnt('FINE THREAD PRINCIPALE', { bold: true });
       }
     },
     loadFile(file) {
@@ -179,12 +185,8 @@ export default {
   },
   watch: {
     running() {
-      if (!this.running) {
-        this.stopAll(new Error('Interrotto dall\'utente'));
-        window.alert = originalAlert;
-      }
       // eslint-disable-next-line no-console
-      console.log('RUNLEVEL:', this.running);
+      console.log('THREADS:', this.running);
     },
   },
   mounted() {
@@ -234,3 +236,20 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.scrollArea {
+  height: 100%;
+  transition: all 0.3s;
+  &.almost {
+    height: calc(100% - 3rem);
+  }
+  * {
+    overflow-anchor: none;
+  }
+  .anchor {
+    height: 1px;
+    overflow-anchor: auto;
+  }
+}
+</style>

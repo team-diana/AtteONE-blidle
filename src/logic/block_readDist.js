@@ -50,7 +50,6 @@ Blockly.JavaScript.leggi_distanza = (block) => {
   const rovNum = block.getFieldValue('rovNum');
   const inCode = Blockly.JavaScript.statementToCode(block, 'code');
   return `this.mqttSubscribe('atte${rovNum}/distance', (dist) => {
-    ${distvar} = dist;
-    ${inCode}
-  });\n`;
+  ${distvar} = dist;
+  ${inCode}\n});\n`;
 };

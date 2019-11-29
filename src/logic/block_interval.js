@@ -26,21 +26,22 @@ Blockly.JavaScript.interval = (block) => {
     Blockly.JavaScript.ORDER_ATOMIC,
   );
   if (!interval) {
-    return "alert('Intervallo ciclo non definito!')";
+    return "this.prnt('Intervallo ciclo non definito!')";
   }
   if (!cond) {
-    return "alert('Condizione ciclo non definita!')";
+    return "this.prnt('Condizione ciclo non definita!')";
   }
   if (!intCode) {
-    return "alert('Codice ciclo non definito!')";
+    return "this.prnt('Codice ciclo non definito!')";
   }
-  const fun = `fun${Date.now()}_${Math.floor(Math.random() * 99999)}`;
+  const fun = `interval_${Math.floor((Date.now() % 9999)
+    + Math.random() * 9999)}`;
   const code = `
   let ${fun} = () => {
     try {
       ${intCode}
     } catch (e) {
-      this.stopAll(e);
+      this.stopAll(e, '${fun}');
     }
     if (${cond} && this.runnable) {
       setTimeout(${fun}, ${interval});

@@ -27,7 +27,7 @@ Blockly.Blocks.speed_control = {
 
 Blockly.JavaScript.speed_control = (block) => {
   const rovNum = block.getFieldValue('rovNum');
-  const speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC);
-  const direzione = Blockly.JavaScript.valueToCode(block, 'direzione', Blockly.JavaScript.ORDER_ATOMIC);
-  return `this.mqttPublish('atte${rovNum}/move', '${speed} ${direzione}')\n`;
+  const speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_NONE);
+  const direzione = Blockly.JavaScript.valueToCode(block, 'direzione', Blockly.JavaScript.ORDER_NONE);
+  return `this.mqttPublish('atte${rovNum}/move', ${speed}+' '+${direzione});\n`;
 };

@@ -69,8 +69,11 @@ export default new Vue({
       this.client.publish(message);
     },
     subscribe(topic, onMessage) {
-      this.client.subscribe(topic);
+      if (msgHandlers[topic]) {
+        throw new Error('SOTTOSCRIZIONE DUPLICATA!');
+      }
       msgHandlers[topic] = onMessage;
+      this.client.subscribe(topic);
     },
     clearHandlers() {
       Object.keys(msgHandlers).forEach((topic) => {

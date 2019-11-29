@@ -14,6 +14,12 @@ Blockly.setLocale(It);
 
 Blockly.JavaScript.STATEMENT_PREFIX = 'this.xblk(%1);\n';
 Blockly.JavaScript.addReservedWords('this');
+Blockly.JavaScript.addReservedWords('code');
+
+Blockly.JavaScript.text_print = (a) => {
+  const t = Blockly.JavaScript.valueToCode(a, 'TEXT', Blockly.JavaScript.ORDER_NONE) || "''";
+  return `this.prnt(${t});\n`;
+};
 
 const initWorkspace = elm => Blockly.inject(elm,
   {

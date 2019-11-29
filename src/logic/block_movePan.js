@@ -24,5 +24,5 @@ Blockly.JavaScript.pan_control = (block) => {
   const angle = Blockly.JavaScript.valueToCode(block, 'pan', Blockly.JavaScript.ORDER_ATOMIC);
   const rovNum = block.getFieldValue('rovNum');
 
-  return `this.mqttPublish('atte${rovNum}/pan', '${angle}')\n`;
+  return `this.mqttPublish('atte${rovNum}/pan', ''+${angle})\n`;
 };
